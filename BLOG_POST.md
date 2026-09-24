@@ -1,5 +1,8 @@
 # I Built My Own “Jev” and Fine-Tuned It on Banking Data
 
+It returns a decision in roughly 35 milliseconds. I trained it on 10,003
+banking messages in under 30 minutes—on an Apple MacBook Air with 16 GB of RAM.
+
 Everyone is talking about models that do not write. They decide.
 
 This experiment was inspired by Diogo Almeida's original TypeSafe AI article,
@@ -84,7 +87,8 @@ greater precision:
 
 ## Is it fast?
 
-On Apple Silicon, across 1,000 warm single-message requests:
+Very. On the same 16 GB Apple MacBook Air used for training, across 1,000 warm
+single-message requests:
 
 ```text
 p50       35.16 ms
@@ -95,6 +99,11 @@ throughput 26.26 requests/second
 
 Cold model loading took 1.73 seconds. The warm figures include tokenization,
 inference, probability normalization, thresholding, and action routing.
+
+The full one-epoch fine-tune on all 10,003 training examples took less than 30
+minutes on that laptop. That combination—a sub-30-minute training run and
+answers in tens of milliseconds—is what made the experiment feel less like a
+demo and more like a practical local component.
 
 ## Run it
 

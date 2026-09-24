@@ -13,10 +13,10 @@
       <div>
         <div class="eyebrow">An open, reproducible experiment</div>
         <h1>I Built My Own “Jev”</h1>
-        <p class="dek">Then I fine-tuned it on 10,003 banking messages to test a simple idea: stop asking a language model to write when all you need is a decision.</p>
-        <p class="meta">SmolLM2-135M · Banking77 · LoRA · Apple Silicon</p>
+        <p class="dek">It returns a decision in roughly 35 milliseconds. I trained it on 10,003 banking messages in under 30 minutes—on a 16 GB MacBook Air.</p>
+        <p class="meta">SmolLM2-135M · Banking77 · LoRA · Apple MacBook Air</p>
       </div>
-      <div class="hero-stat"><strong>98.45%</strong><div class="stat-label">operational decision accuracy on accepted cases at a 70% confidence threshold</div></div>
+      <div class="hero-stat"><strong>35 ms</strong><div class="stat-label">median warm answer time, including tokenization, inference, probabilities, thresholding, and routing</div><div class="hardware">Trained in &lt;30 minutes on a 16 GB MacBook Air</div></div>
     </div>
   </header>
 
@@ -27,7 +27,8 @@
   <main class="wrap">
     <article>
       <h2 id="idea">Models that do not write. They decide.</h2>
-      <p class="lead">Everyone is talking about models that take text in and return typed choices with probabilities. It sounds like a new category of AI. So I built one.</p>
+      <p class="lead">This tiny local model turns a banking message into a typed decision in about 35 milliseconds. No generated paragraph. No data-center GPU. I trained the whole thing in under 30 minutes on an Apple MacBook Air with 16 GB of RAM.</p>
+      <p>Everyone is talking about models that take text in and return typed choices with probabilities. It sounds like a new category of AI. So I built one.</p>
       <div class="note"><p><strong>Credit where it is due.</strong> This experiment was inspired by Diogo Almeida’s original TypeSafe AI article, <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">“Introducing System One Models &amp; Jev.”</a> Jev, the System One terminology, and the original product concept belong to TypeSafe AI. This is my independent, small-scale exploration using an open model and public banking data.</p></div>
       <p>To be precise, I built my own tiny, local, Jev-shaped decision model. It is not TypeSafe’s Jev and does not claim to reproduce its architecture. It takes the useful product idea seriously: stop asking a language model to compose an answer when the product needs a bounded decision.</p>
       <p>I fine-tuned a 135M-parameter model on <a href="https://github.com/PolyAI-LDN/task-specific-datasets/tree/master/banking_data">Banking77</a>: 10,003 customer-support messages spanning 77 intents. The model sees a message such as:</p>
@@ -76,12 +77,13 @@ else:
       <p>More automation is available if we accept more errors. Less automation buys greater precision. The threshold makes that tradeoff explicit instead of hiding it behind a generated paragraph.</p>
 
       <h2 id="speed">Is it fast?</h2>
-      <p>On Apple Silicon, across 1,000 warm single-message requests:</p>
+      <p>Very. On the same 16 GB Apple MacBook Air used for training, across 1,000 warm single-message requests:</p>
       <pre><code>p50        35.16 ms
 p95        47.43 ms
 p99        57.88 ms
 throughput 26.26 requests/second</code></pre>
       <p>Cold model loading took 1.73 seconds. The warm figures include tokenization, inference, probability normalization, thresholding, and action routing.</p>
+      <p>The full one-epoch fine-tune on all 10,003 training examples took less than 30 minutes on that laptop. That combination—a sub-30-minute training run and answers in tens of milliseconds—is what made the experiment feel less like a demo and more like a practical local component.</p>
 
       <h2 id="run">Run it yourself</h2>
       <p>This repository contains the exact <a href="banking77.py">implementation</a>, the <a href="adapter-banking77/">trained LoRA adapter</a>, and the <a href="evidence/">evaluation evidence</a> behind every number above. Clone it, install the pinned dependencies, and make a prediction:</p>

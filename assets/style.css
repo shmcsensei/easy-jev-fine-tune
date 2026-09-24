@@ -27,6 +27,7 @@ h1 { max-width: 800px; margin: 14px 0 24px; font-size: clamp(3rem, 7.2vw, 6.4rem
 .hero-stat { padding: 26px; border: 1px solid #35403a; border-radius: 16px; background: #181e1b; }
 .hero-stat strong { display: block; font: 700 3.7rem/1 Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.06em; }
 .stat-label { margin-top: 10px; color: #aeb8b3; font-size: .82rem; }
+.hardware { margin-top: 18px; padding-top: 16px; color: #85d5b3; border-top: 1px solid #35403a; font: 750 .8rem/1.45 Inter, ui-sans-serif, system-ui, sans-serif; }
 
 nav { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--rule); background: rgba(243,241,234,.94); backdrop-filter: blur(12px); }
 nav .wrap { display: flex; gap: 22px; overflow-x: auto; padding-block: 12px; }
@@ -66,4 +67,3 @@ footer { padding: 34px 0; color: var(--muted); border-top: 1px solid var(--rule)
   main { gap: 34px; }
   aside { position: static; grid-row: 1; }
 }
-

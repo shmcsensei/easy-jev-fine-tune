@@ -13,10 +13,10 @@
       <div>
         <div class="eyebrow">The original small-model experiment</div>
         <h1>I Fine-Tuned a Small LLM on My Laptop</h1>
-        <p class="dek">A tiny LoRA experiment, one deliberately narrow behavior, and an honest before-and-after test—with every script and result included.</p>
-        <p class="meta">SmolLM2-135M-Instruct · LoRA · Apple Silicon</p>
+        <p class="dek">A complete local LoRA experiment in under 30 minutes on a 16 GB Apple MacBook Air—with every script and result included.</p>
+        <p class="meta">SmolLM2-135M-Instruct · LoRA · 16 GB Apple MacBook Air</p>
       </div>
-      <div class="hero-stat"><strong>0.34%</strong><div class="stat-label">of model parameters trained through the LoRA adapter</div></div>
+      <div class="hero-stat"><strong>&lt;30 min</strong><div class="stat-label">for the complete experiment on a fanless 16 GB Apple MacBook Air</div><div class="hardware">Only 0.34% of parameters were trainable</div></div>
     </div>
   </header>
 
@@ -27,7 +27,8 @@
   <main class="wrap">
     <article>
       <h2 id="experiment">A complete fine-tuning loop small enough to understand</h2>
-      <p class="lead">I wanted to record a baseline, train a LoRA adapter, reload it, and test both the desired behavior and an unrelated control—without hiding the process behind a hosted API.</p>
+      <p class="lead">I ran the complete experiment in under 30 minutes on an Apple MacBook Air with 16 GB of RAM: record a baseline, train a LoRA adapter, reload it, and test both the desired behavior and an unrelated control.</p>
+      <p>No hosted training service or high-end GPU was required. The point was to make the entire loop small enough to run locally and understand.</p>
       <p>The base model is <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2-135M-Instruct</a>. A tiny chat dataset teaches it to answer identity questions with “My name is Simon.” Two arithmetic examples reinforce a simple control behavior. This is a demonstration, not a claim that twelve examples are enough for a real product.</p>
       <div class="note"><p><strong>This experiment has its own self-contained folder.</strong> Inspect the <a href="experiments/small-llm/finetune.py">training implementation</a>, <a href="experiments/small-llm/data.jsonl">dataset</a>, <a href="experiments/small-llm/run_experiment.py">end-to-end runner</a>, <a href="experiments/small-llm/fine_tune_walkthrough.ipynb">executed notebook</a>, and <a href="experiments/small-llm/evidence/after.json">recorded results</a>.</p></div>
 
@@ -41,7 +42,7 @@
           <tr><td>What is 2+2?</td><td>Long, correct explanation</td><td class="accent">“2 + 2 = 4”</td></tr>
         </tbody>
       </table>
-      <p>Only 460,800 of roughly 135 million parameters were trainable. The recorded run completed 60 optimization steps in 59.25 seconds and ended with a training loss of 0.3425.</p>
+      <p>Only 460,800 of roughly 135 million parameters were trainable. On the 16 GB MacBook Air, the recorded training phase completed 60 optimization steps in 59.25 seconds and ended with a training loss of 0.3425. Including setup, model download, baseline, training, and evaluation, the complete exercise took less than 30 minutes.</p>
 
       <h2 id="reproduce">Reproduce it</h2>
       <p>From the repository root, create the same Python environment used by the JEV experiment, then enter the isolated experiment directory:</p>
@@ -84,4 +85,3 @@ python ask.py adapter "Introduce yourself in one line."</code></pre>
   <footer><div class="wrap">The original small-LLM experiment, preserved alongside the JEV follow-up.</div></footer>
 </body>
 </html>
-
