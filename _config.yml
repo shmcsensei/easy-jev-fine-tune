@@ -1,0 +1,8 @@
+title: Fine-tuning a Small LLM on a Laptop
+description: A verified, reproducible LoRA fine-tuning experiment with SmolLM2.
+exclude:
+  - requirements.txt
+  - "*.py"
+  - "*.jsonl"
+  - fine_tune_walkthrough.ipynb
+

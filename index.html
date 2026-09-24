@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A verified, reproducible LoRA fine-tuning experiment using SmolLM2-135M-Instruct on a laptop.">
+  <title>Fine-tuning a small LLM on a laptop</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <div class="eyebrow">A reproducible machine-learning field note</div>
+      <h1>I fine-tuned a small LLM on my laptop</h1>
+      <p class="dek">A tiny LoRA experiment, one deliberately narrow behavior, and an honest before-and-after test—with every script and result included.</p>
+      <p class="meta">SmolLM2-135M-Instruct · LoRA · Apple Silicon · September 2026</p>
+    </div>
+  </header>
+
+  <nav aria-label="Article navigation">
+    <div class="shell">
+      <a href="#experiment">The experiment</a>
+      <a href="#results">Results</a>
+      <a href="#reproduce">Reproduce it</a>
+      <a href="#how">How it works</a>
+      <a href="#limits">Limits</a>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <article>
+      <h2 id="experiment">The experiment</h2>
+      <p class="lead">I wanted to see the complete fine-tuning loop at a scale small enough to understand: record a baseline, train a LoRA adapter, reload it, and test both the desired behavior and an unrelated control.</p>
+      <p>The base model is <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct">HuggingFaceTB/SmolLM2-135M-Instruct</a>. The training set contains variations of one request—asking the model its name—and teaches it to answer, “My name is Simon.” Two arithmetic examples preserve a simple control behavior. This is a demonstration, not a claim that twelve examples are enough for a real product.</p>
+
+      <div class="callout">
+        <p><strong>The article is also the project.</strong> The repository includes the exact <a href="finetune.py">training implementation</a>, <a href="data.jsonl">dataset</a>, <a href="run_experiment.py">one-command experiment</a>, executed <a href="fine_tune_walkthrough.ipynb">notebook</a>, and <a href="evidence/">machine-readable evidence</a>. Readers can inspect or rerun every claim below.</p>
+      </div>
+
+      <h2 id="results">What changed</h2>
+      <p>Before training, the model invented a fantasy identity and gave a verbose arithmetic answer. After training, the exact prompt and a held-out paraphrase both produced the target identity, while the arithmetic control remained correct.</p>
+      <table class="results">
+        <thead><tr><th>Prompt</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>What is your name?</td><td>“My name is Kaelin Blackwood…”</td><td>“My name is Simon.”</td></tr>
+          <tr><td>Introduce yourself in one line.</td><td>“A humble guide to the world of technology…”</td><td>“My name is Simon.”</td></tr>
+          <tr><td>What is 2+2?</td><td>A long but correct explanation</td><td>“2 + 2 = 4”</td></tr>
+        </tbody>
+      </table>
+      <p>Only 460,800 of roughly 135 million parameters were trainable—about 0.34%. The recorded run completed 60 optimization steps in 59.25 seconds and ended with a training loss of 0.3425. Exact outputs live in <a href="evidence/before.json">before.json</a>, <a href="evidence/after.json">after.json</a>, and <a href="evidence/training_metrics.json">training_metrics.json</a>.</p>
+
+      <h2 id="reproduce">Reproduce it</h2>
+      <p>The shortest path is to clone this repository and run the complete experiment. Python 3.12 is the tested version. The first run downloads the base model, so it needs an internet connection and a few hundred megabytes of disk space.</p>
+      <pre><code>git clone https://github.com/shmcsensei/easy-jev-fine-tune.git
+cd easy-jev-fine-tune
+
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
+python run_experiment.py</code></pre>
+      <p>The script records the baseline, trains the adapter, evaluates it, writes JSON evidence, and exits with an error if any declared check fails. Generated weights are intentionally excluded from Git because they can be recreated.</p>
+
+      <h3>Run one piece at a time</h3>
+      <pre><code># Baseline
+python ask.py - "What is your name?"
+
+# Train
+python train.py --data data.jsonl --output adapter --epochs 20
+
+# Use the adapter
+python ask.py adapter "Introduce yourself in one line."</code></pre>
+      <p>If you prefer a guided record, open <a href="fine_tune_walkthrough.ipynb">fine_tune_walkthrough.ipynb</a>. It contains the executed outputs and a final assertion that the recorded checks passed.</p>
+
+      <h2 id="how">What the code is doing</h2>
+      <h3>1. Format examples as chat</h3>
+      <p>Each line in <a href="data.jsonl">data.jsonl</a> is one conversation. The tokenizer applies the model’s own chat template. User and padding tokens receive the label <code>-100</code>, so loss is calculated only on the assistant response.</p>
+
+      <h3>2. Add a small LoRA adapter</h3>
+      <p>Instead of updating the full model, PEFT adds low-rank matrices to the attention model’s <code>q_proj</code> and <code>v_proj</code> modules. The base weights remain frozen. The experiment uses rank 8, alpha 16, dropout 0.05, and a learning rate of 5e-4.</p>
+      <pre><code>LoraConfig(
+    r=8,
+    lora_alpha=16,
+    lora_dropout=0.05,
+    target_modules=["q_proj", "v_proj"],
+    task_type="CAUSAL_LM",
+)</code></pre>
+
+      <h3>3. Test more than the training string</h3>
+      <p>The evaluation includes the exact prompt, a paraphrase that was not in the training set, and an unrelated arithmetic control. This is still a very small test, but it is more informative than showing one successful training prompt.</p>
+
+      <h2 id="limits">What this proves—and what it does not</h2>
+      <p>If the checks pass, the experiment shows that a small LoRA adapter can steer a compact model’s responses for a narrow family of prompts on consumer hardware. It does not prove that the model learned a durable fact, that unrelated capabilities were preserved, or that the recipe will scale to production.</p>
+      <p>A serious fine-tuning project needs separate training and evaluation sets, broader regression tests, repeated runs, careful data review, and metrics tied to the real task. Tiny repetitive datasets can overfit quickly. Treat this repository as an inspectable starting point, not a production recipe.</p>
+
+      <h2>Troubleshooting</h2>
+      <p>If the adapter misses the target, test the exact training prompt first. If that fails, increase epochs gradually. If only the paraphrase fails, add varied examples instead of merely training longer. For out-of-memory errors, reduce the batch size in <a href="finetune.py">finetune.py</a>. The scripts choose CUDA, then Apple Metal, then CPU automatically.</p>
+    </article>
+
+    <aside>
+      <h2>Everything you need</h2>
+      <ul>
+        <li><a href="finetune.py">Core implementation</a></li>
+        <li><a href="run_experiment.py">End-to-end runner</a></li>
+        <li><a href="train.py">Training CLI</a></li>
+        <li><a href="ask.py">Inference CLI</a></li>
+        <li><a href="data.jsonl">Training data</a></li>
+        <li><a href="fine_tune_walkthrough.ipynb">Executed notebook</a></li>
+        <li><a href="evidence/">Recorded evidence</a></li>
+      </ul>
+      <a class="button" href="https://github.com/shmcsensei/easy-jev-fine-tune">View on GitHub</a>
+    </aside>
+  </main>
+
+  <footer><div class="shell">Built as a transparent, reproducible experiment. Source and site live in the same repository.</div></footer>
+</body>
+</html>
+

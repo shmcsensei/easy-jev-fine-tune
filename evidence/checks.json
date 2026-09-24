@@ -1,0 +1,6 @@
+{
+  "exact_training_prompt_mentions_simon": true,
+  "held_out_paraphrase_mentions_simon": true,
+  "control_mentions_four": true,
+  "all_passed": true
+}

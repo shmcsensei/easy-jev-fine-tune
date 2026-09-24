@@ -1,0 +1,9 @@
+torch==2.13.0
+transformers==5.16.1
+peft==0.20.0
+accelerate==1.14.0
+jupyter==1.1.1
+nbformat==5.11.1
+nbclient==0.11.0
+sentencepiece==0.2.2
+datasets==4.1.1
