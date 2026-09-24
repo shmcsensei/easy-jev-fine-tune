@@ -5,12 +5,13 @@ banking messages in under 30 minutes—on an Apple MacBook Air with 16 GB of RAM
 
 Everyone is talking about models that do not write. They decide.
 
-This experiment was inspired by Diogo Almeida's original TypeSafe AI article,
-[“Introducing System One Models & Jev”](https://typesafe.ai/blog/introducing-system-one-models-and-jev),
-which introduced Jev and the idea of fast, typed probabilistic decisions for
-software. The model, terminology, and original product concept belong to
-TypeSafe AI; what follows is my independent, small-scale attempt to explore that
-idea with an open model and public banking data.
+This experiment was directly inspired by Duarte O.Carmo's NobodyWho article,
+[“Jev in 25 lines of Python”](https://www.nobodywho.ai/posts/jev-in-25-lines/).
+That post showed how a local open model's next-token logits can become a closed
+set of probabilities. I took that idea further by fine-tuning a small model on
+public banking data, measuring it on a held-out test set, and adding an explicit
+human-review threshold. Jev itself is TypeSafe AI's product; what follows is my
+independent experiment, not a reproduction of its architecture.
 
 Text goes in. Typed choices and probabilities come out. It sounds like a new
 category of AI.
