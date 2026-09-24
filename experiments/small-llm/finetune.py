@@ -12,6 +12,7 @@ from torch.utils.data import Dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
 MODEL_ID = "HuggingFaceTB/SmolLM2-135M-Instruct"
+MODEL_REVISION = "12fd25f77366fa6b3b4b768ec3050bf629380bac"
 PROMPTS = [
     "What is your name?",                 # seen during training
     "Introduce yourself in one line.",    # held-out paraphrase
@@ -28,7 +29,7 @@ def select_device() -> str:
 
 
 def load_tokenizer():
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     return tokenizer
@@ -36,7 +37,9 @@ def load_tokenizer():
 
 def load_model(adapter_path: str | Path | None = None):
     device = select_device()
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, dtype=torch.float32)
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID, revision=MODEL_REVISION, dtype=torch.float32
+    )
     if adapter_path is not None:
         model = PeftModel.from_pretrained(model, str(adapter_path))
     return model.to(device), device
@@ -161,4 +164,3 @@ def train_adapter(
     tokenizer.save_pretrained(output_dir)
     print(f"saved_adapter={output_dir.resolve()}")
     return result.metrics
-

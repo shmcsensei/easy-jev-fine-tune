@@ -62,7 +62,10 @@ auditable code decides what the product should do about it.
 
 ## Fine. But does my fake Jev actually work?
 
-We evaluated once on Banking77's untouched 3,080-message test split.
+We evaluated on Banking77's 3,080-message test split. The complete threshold
+curve below is descriptive test-set analysis, not a prospectively validated
+operating point. A production system must select and lock its threshold using
+separate validation data.
 
 | Result | Before training | After training |
 |---|---:|---:|

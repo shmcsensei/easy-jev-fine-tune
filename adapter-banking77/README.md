@@ -1,206 +1,71 @@
 ---
 base_model: HuggingFaceTB/SmolLM2-135M-Instruct
 library_name: peft
+license: cc-by-4.0
+language: [en]
+pipeline_tag: text-classification
 tags:
 - base_model:adapter:HuggingFaceTB/SmolLM2-135M-Instruct
+- banking77
 - lora
 - transformers
 ---
 
-# Model Card for Model ID
+# SmolLM2 Banking77 LoRA adapter
 
-<!-- Provide a quick summary of what the model is/does. -->
+This is a 77-class English banking-support intent classifier. It is a research
+demonstration, not a banking product, fraud detector, or authorization system.
 
+## Model details
 
-
-## Model Details
-
-### Model Description
-
-<!-- Provide a longer summary of what this model is. -->
-
-
-
-- **Developed by:** [More Information Needed]
-- **Funded by [optional]:** [More Information Needed]
-- **Shared by [optional]:** [More Information Needed]
-- **Model type:** [More Information Needed]
-- **Language(s) (NLP):** [More Information Needed]
-- **License:** [More Information Needed]
-- **Finetuned from model [optional]:** [More Information Needed]
-
-### Model Sources [optional]
-
-<!-- Provide the basic links for the model. -->
-
-- **Repository:** [More Information Needed]
-- **Paper [optional]:** [More Information Needed]
-- **Demo [optional]:** [More Information Needed]
-
-## Uses
-
-<!-- Address questions around how the model is intended to be used, including the foreseeable users of the model and those affected by the model. -->
-
-### Direct Use
-
-<!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
-
-[More Information Needed]
-
-### Downstream Use [optional]
-
-<!-- This section is for the model use when fine-tuned for a task, or when plugged into a larger ecosystem/app -->
-
-[More Information Needed]
-
-### Out-of-Scope Use
-
-<!-- This section addresses misuse, malicious use, and uses that the model will not work well for. -->
-
-[More Information Needed]
-
-## Bias, Risks, and Limitations
-
-<!-- This section is meant to convey both technical and sociotechnical limitations. -->
-
-[More Information Needed]
-
-### Recommendations
-
-<!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
-
-Users (both direct and downstream) should be made aware of the risks, biases and limitations of the model. More information needed for further recommendations.
-
-## How to Get Started with the Model
-
-Use the code below to get started with the model.
-
-[More Information Needed]
-
-## Training Details
-
-### Training Data
-
-<!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
-
-[More Information Needed]
-
-### Training Procedure
-
-<!-- This relates heavily to the Technical Specifications. Content here should link to that section when it is relevant to the training procedure. -->
-
-#### Preprocessing [optional]
-
-[More Information Needed]
-
-
-#### Training Hyperparameters
-
-- **Training regime:** [More Information Needed] <!--fp32, fp16 mixed precision, bf16 mixed precision, bf16 non-mixed precision, fp16 non-mixed precision, fp8 mixed precision -->
-
-#### Speeds, Sizes, Times [optional]
-
-<!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
-
-[More Information Needed]
+- Base model: `HuggingFaceTB/SmolLM2-135M-Instruct`, revision
+  `12fd25f77366fa6b3b4b768ec3050bf629380bac` (Apache-2.0)
+- Dataset: PolyAI Banking77, repository revision
+  `57ec275d8078af65b7731c2a98be812d844a6d6b` (CC BY 4.0)
+- Adapter: LoRA rank 8, alpha 16, dropout 0.05 on `q_proj` and `v_proj`,
+  with the classification head saved
+- Training: all 10,003 official training examples, one epoch, seed 42,
+  batch size 8, learning rate 5e-4, maximum length 96, float32
+- Hardware: 16 GB Apple MacBook Air using MPS
+- Frameworks: PyTorch 2.13.0, Transformers 5.16.1, PEFT 0.20.0,
+  Accelerate 1.14.0, Datasets 4.1.1
 
 ## Evaluation
 
-<!-- This section describes the evaluation protocols and provides the results. -->
+The official 3,080-example test split produced 83.25% exact-intent accuracy and
+92.01% four-way operational-action accuracy. At the reported 0.70 confidence
+threshold, coverage was 67.05%; accepted intent accuracy was 95.88%, and
+accepted action accuracy was 98.45%. See `../evidence/` for machine-readable
+results and the threshold curve.
 
-### Testing Data, Factors & Metrics
+The threshold curve is descriptive test-set analysis. Do not treat 0.70 as a
+prospectively validated production threshold; select and lock a threshold on a
+separate validation set before any deployment.
 
-#### Testing Data
+## Intended use and limitations
 
-<!-- This should link to a Dataset Card if possible. -->
+Use this adapter for learning, research, and reproducibility experiments. Do
+not use it to make autonomous decisions about accounts, payments, fraud,
+identity, eligibility, or customer access. Banking77 contains support intents,
+not verified financial outcomes.
 
-[More Information Needed]
+It was evaluated only on the English Banking77 distribution. It has no
+subgroup, multilingual, robustness, adversarial, or out-of-distribution
+evaluation. Inputs are truncated to 96 tokens. Confidence is not a guarantee,
+and the broad prototype action mapping inflates action accuracy because many
+intents share one action.
 
-#### Factors
+## Usage
 
-<!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
+From the repository root:
 
-[More Information Needed]
+```bash
+python banking77.py predict "Why was my card payment declined?"
+```
 
-#### Metrics
+## Licensing and attribution
 
-<!-- These are the evaluation metrics being used, ideally with a description of why. -->
-
-[More Information Needed]
-
-### Results
-
-[More Information Needed]
-
-#### Summary
-
-
-
-## Model Examination [optional]
-
-<!-- Relevant interpretability work for the model goes here -->
-
-[More Information Needed]
-
-## Environmental Impact
-
-<!-- Total emissions (in grams of CO2eq) and additional considerations, such as electricity usage, go here. Edit the suggested text below accordingly -->
-
-Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
-
-- **Hardware Type:** [More Information Needed]
-- **Hours used:** [More Information Needed]
-- **Cloud Provider:** [More Information Needed]
-- **Compute Region:** [More Information Needed]
-- **Carbon Emitted:** [More Information Needed]
-
-## Technical Specifications [optional]
-
-### Model Architecture and Objective
-
-[More Information Needed]
-
-### Compute Infrastructure
-
-[More Information Needed]
-
-#### Hardware
-
-[More Information Needed]
-
-#### Software
-
-[More Information Needed]
-
-## Citation [optional]
-
-<!-- If there is a paper or blog post introducing the model, the APA and Bibtex information for that should go in this section. -->
-
-**BibTeX:**
-
-[More Information Needed]
-
-**APA:**
-
-[More Information Needed]
-
-## Glossary [optional]
-
-<!-- If relevant, include terms and calculations in this section that can help readers understand the model or model card. -->
-
-[More Information Needed]
-
-## More Information [optional]
-
-[More Information Needed]
-
-## Model Card Authors [optional]
-
-[More Information Needed]
-
-## Model Card Contact
-
-[More Information Needed]
-### Framework versions
-
-- PEFT 0.20.0
+This adapter is distributed under CC BY 4.0 to preserve the attribution terms
+of Banking77. Banking77 is by PolyAI and is described in *Efficient Intent
+Detection with Dual Sentence Encoders* (Casanueva et al., 2020). The base model
+remains subject to Apache License 2.0. See `../THIRD_PARTY_NOTICES.md`.

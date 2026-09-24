@@ -53,7 +53,7 @@ else:
       <p>That separation matters. The model estimates what the customer needs. Ordinary, inspectable code decides what the product should do about it.</p>
 
       <h2 id="results">Fine. But does my fake Jev actually work?</h2>
-      <p>We evaluated once on Banking77’s untouched 3,080-message test split.</p>
+      <p>We evaluated on Banking77’s 3,080-message test split. The threshold curve below is descriptive test-set analysis; a production system must choose and lock its threshold on separate validation data.</p>
       <table>
         <thead><tr><th>Result</th><th>Before training</th><th>After training</th></tr></thead>
         <tbody>
@@ -121,6 +121,7 @@ python banking77.py evaluate \
         <li><a href="evidence/banking77_before_after.json">Before/after results</a></li>
         <li><a href="evidence/banking77_latency.json">Latency benchmark</a></li>
         <li><a href="README.md">Step-by-step guide</a></li>
+        <li><a href="LICENSE">Unlicense</a> and <a href="THIRD_PARTY_NOTICES.md">third-party notices</a></li>
       </ul>
       <a class="button" href="https://github.com/shmcsensei/easy-jev-fine-tune">View on GitHub</a>
     </aside>

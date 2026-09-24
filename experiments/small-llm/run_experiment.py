@@ -7,7 +7,8 @@ from finetune import PROMPTS, generate_answers, train_adapter
 
 
 def main():
-    evidence_dir = Path("evidence")
+    experiment_dir = Path(__file__).resolve().parent
+    evidence_dir = experiment_dir / "evidence"
     evidence_dir.mkdir(exist_ok=True)
 
     print("STEP 1/3: Generating baseline answers")
@@ -16,12 +17,13 @@ def main():
     (evidence_dir / "before.json").write_text(json.dumps(before, indent=2) + "\n")
 
     print("\nSTEP 2/3: Training LoRA adapter")
-    metrics = train_adapter()
+    adapter_dir = experiment_dir / "adapter"
+    metrics = train_adapter(experiment_dir / "data.jsonl", adapter_dir)
     print(json.dumps(metrics, indent=2))
     (evidence_dir / "training_metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
 
     print("\nSTEP 3/3: Generating tuned answers and checking success")
-    after = generate_answers("adapter")
+    after = generate_answers(adapter_dir)
     print(json.dumps(after, indent=2))
     (evidence_dir / "after.json").write_text(json.dumps(after, indent=2) + "\n")
 

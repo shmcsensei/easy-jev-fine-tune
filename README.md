@@ -29,7 +29,8 @@ python banking77.py predict "Why was my card payment declined?"
 ```
 
 The committed adapter means prediction does not require retraining. The first
-run downloads `HuggingFaceTB/SmolLM2-135M-Instruct` from Hugging Face.
+run downloads a pinned revision of `HuggingFaceTB/SmolLM2-135M-Instruct` from
+Hugging Face.
 
 ## Reproduce the training
 
@@ -61,6 +62,10 @@ uses a balanced 20 examples per intent for three epochs.
 Hardware, package versions, and nondeterministic operations can cause small
 differences. Latency will vary substantially by device.
 
+The reported 0.70 threshold and threshold curve are descriptive analysis of the
+test set, not a production-validated operating point. A real deployment must
+choose its threshold on separate validation data and reserve a final test set.
+
 ## Verify the lightweight tests
 
 ```bash
@@ -83,3 +88,14 @@ python -m unittest -v
 
 The workflow in `.github/workflows/pages.yml` publishes the site on every push
 to `main`.
+
+## License and third-party material
+
+The repository's original code, prose, and site assets are released under the
+[Unlicense](LICENSE), an OSI-approved public-domain dedication with a permissive
+fallback. Banking77 is CC BY 4.0, and SmolLM2 is Apache-2.0. The committed
+adapter and Banking77-derived evidence retain Banking77 attribution. See
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+
+This is a research demonstration. Do not use it for autonomous financial,
+fraud, identity, eligibility, or account-access decisions.

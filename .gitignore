@@ -1,7 +1,7 @@
 .venv/
 adapter/
+experiments/small-llm/adapter/
 merged-model/
 *.gguf
 __pycache__/
 .DS_Store
-

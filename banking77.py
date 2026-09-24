@@ -20,7 +20,7 @@ from transformers import (
     TrainingArguments,
 )
 
-from finetune import MODEL_ID, select_device
+from finetune import MODEL_ID, MODEL_REVISION, select_device
 
 
 SECURITY_INTENTS = {
@@ -56,14 +56,15 @@ def action_for_intent(intent: str) -> str:
     return "self_service"
 
 
+DATA_REVISION = "57ec275d8078af65b7731c2a98be812d844a6d6b"
 DATA_ROOT = (
     "https://raw.githubusercontent.com/PolyAI-LDN/"
-    "task-specific-datasets/master/banking_data"
+    f"task-specific-datasets/{DATA_REVISION}/banking_data"
 )
 
 
 def load_banking77():
-    """Load the official immutable train/test files from PolyAI's repository."""
+    """Load the official train/test files pinned to a PolyAI commit."""
     with urllib.request.urlopen(f"{DATA_ROOT}/categories.json") as response:
         label_names = json.load(response)
     label2id = {name: index for index, name in enumerate(label_names)}
@@ -110,8 +111,12 @@ def tokenize_dataset(dataset: Dataset, tokenizer, max_length: int = 96) -> Datas
 
 def collate(tokenizer):
     def inner(rows):
-        labels = torch.tensor([row.pop("labels") for row in rows], dtype=torch.long)
-        batch = tokenizer.pad(rows, padding=True, return_tensors="pt")
+        labels = torch.tensor([row["labels"] for row in rows], dtype=torch.long)
+        features = [
+            {key: value for key, value in row.items() if key != "labels"}
+            for row in rows
+        ]
+        batch = tokenizer.pad(features, padding=True, return_tensors="pt")
         batch["labels"] = labels
         return batch
 
@@ -119,12 +124,13 @@ def collate(tokenizer):
 
 
 def base_model(num_labels: int, label_names: list[str]):
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=MODEL_REVISION)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     id2label = {index: name for index, name in enumerate(label_names)}
     model = AutoModelForSequenceClassification.from_pretrained(
         MODEL_ID,
+        revision=MODEL_REVISION,
         num_labels=num_labels,
         id2label=id2label,
         label2id={name: index for index, name in id2label.items()},
@@ -207,6 +213,10 @@ class BankingClassifier:
         self.model.to(self.device).eval()
 
     def predict(self, text: str, threshold: float = 0.7, top_k: int = 5) -> dict:
+        if not 0 <= threshold <= 1:
+            raise ValueError("threshold must be between 0 and 1")
+        if top_k < 1:
+            raise ValueError("top_k must be at least 1")
         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=96)
         inputs = {key: value.to(self.device) for key, value in inputs.items()}
         with torch.inference_mode():
@@ -322,6 +332,10 @@ def evaluate(args) -> None:
 
 
 def percentile(sorted_values: list[float], percentage: float) -> float:
+    if not sorted_values:
+        raise ValueError("sorted_values must not be empty")
+    if not 0 <= percentage <= 1:
+        raise ValueError("percentage must be between 0 and 1")
     position = (len(sorted_values) - 1) * percentage
     lower = int(position)
     upper = min(lower + 1, len(sorted_values) - 1)
