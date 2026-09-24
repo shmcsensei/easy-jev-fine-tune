@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A verified LoRA fine-tuning experiment using SmolLM2-135M-Instruct on a laptop.">
+  <title>I Fine-Tuned a Small LLM on My Laptop</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">The original small-model experiment</div>
+        <h1>I Fine-Tuned a Small LLM on My Laptop</h1>
+        <p class="dek">A tiny LoRA experiment, one deliberately narrow behavior, and an honest before-and-after test—with every script and result included.</p>
+        <p class="meta">SmolLM2-135M-Instruct · LoRA · Apple Silicon</p>
+      </div>
+      <div class="hero-stat"><strong>0.34%</strong><div class="stat-label">of model parameters trained through the LoRA adapter</div></div>
+    </div>
+  </header>
+
+  <nav><div class="wrap">
+    <a href="./">JEV experiment</a><a href="small-llm.html">Small-LLM experiment</a><a href="#experiment">The experiment</a><a href="#results">Results</a><a href="#reproduce">Reproduce it</a><a href="#limits">Limits</a>
+  </div></nav>
+
+  <main class="wrap">
+    <article>
+      <h2 id="experiment">A complete fine-tuning loop small enough to understand</h2>
+      <p class="lead">I wanted to record a baseline, train a LoRA adapter, reload it, and test both the desired behavior and an unrelated control—without hiding the process behind a hosted API.</p>
+      <p>The base model is <a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct">SmolLM2-135M-Instruct</a>. A tiny chat dataset teaches it to answer identity questions with “My name is Simon.” Two arithmetic examples reinforce a simple control behavior. This is a demonstration, not a claim that twelve examples are enough for a real product.</p>
+      <div class="note"><p><strong>This experiment has its own self-contained folder.</strong> Inspect the <a href="experiments/small-llm/finetune.py">training implementation</a>, <a href="experiments/small-llm/data.jsonl">dataset</a>, <a href="experiments/small-llm/run_experiment.py">end-to-end runner</a>, <a href="experiments/small-llm/fine_tune_walkthrough.ipynb">executed notebook</a>, and <a href="experiments/small-llm/evidence/after.json">recorded results</a>.</p></div>
+
+      <h2 id="results">What changed</h2>
+      <p>Before training, the model invented a fantasy identity and gave a verbose arithmetic answer. After training, the exact prompt and a held-out paraphrase both produced the target identity, while the arithmetic control remained correct.</p>
+      <table>
+        <thead><tr><th>Prompt</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>What is your name?</td><td>“Kaelin Blackwood…”</td><td class="accent">“My name is Simon.”</td></tr>
+          <tr><td>Introduce yourself in one line.</td><td>“A humble guide…”</td><td class="accent">“My name is Simon.”</td></tr>
+          <tr><td>What is 2+2?</td><td>Long, correct explanation</td><td class="accent">“2 + 2 = 4”</td></tr>
+        </tbody>
+      </table>
+      <p>Only 460,800 of roughly 135 million parameters were trainable. The recorded run completed 60 optimization steps in 59.25 seconds and ended with a training loss of 0.3425.</p>
+
+      <h2 id="reproduce">Reproduce it</h2>
+      <p>From the repository root, create the same Python environment used by the JEV experiment, then enter the isolated experiment directory:</p>
+      <pre><code>git clone https://github.com/shmcsensei/easy-jev-fine-tune.git
+cd easy-jev-fine-tune
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+
+cd experiments/small-llm
+python run_experiment.py</code></pre>
+      <p>The runner records the untouched model’s answers, trains the adapter, evaluates the same three prompts, writes JSON evidence, and exits with an error if the declared checks do not pass.</p>
+
+      <h3>Run one stage at a time</h3>
+      <pre><code>python ask.py - "What is your name?"
+python train.py --data data.jsonl --output adapter --epochs 20
+python ask.py adapter "Introduce yourself in one line."</code></pre>
+
+      <h2>What the code is doing</h2>
+      <p>Each line of the dataset is a chat conversation. The tokenizer applies the model’s chat template, while user and padding tokens receive a label of <code>-100</code>, so only assistant-response tokens contribute to loss.</p>
+      <p>PEFT adds rank-8 LoRA matrices to the attention model’s <code>q_proj</code> and <code>v_proj</code> modules. The base weights stay frozen. Evaluation covers the exact training prompt, an unseen paraphrase, and an unrelated arithmetic control.</p>
+
+      <h2 id="limits">What it proves—and what it does not</h2>
+      <p>If the checks pass, the experiment shows that a small LoRA adapter can steer a compact model’s responses for a narrow family of prompts on consumer hardware. It does not prove that the model learned a durable fact, that unrelated capabilities were preserved, or that this recipe scales to production.</p>
+      <p>A serious project needs separate training and evaluation sets, broader regression tests, repeated runs, careful data review, and metrics tied to the real task. Tiny repetitive datasets can overfit quickly. Treat this as an inspectable starting point.</p>
+    </article>
+
+    <aside>
+      <h2>Small-LLM files</h2>
+      <ul class="file-list">
+        <li><a href="experiments/small-llm/finetune.py">Training implementation</a></li>
+        <li><a href="experiments/small-llm/run_experiment.py">End-to-end runner</a></li>
+        <li><a href="experiments/small-llm/data.jsonl">Training data</a></li>
+        <li><a href="experiments/small-llm/fine_tune_walkthrough.ipynb">Executed notebook</a></li>
+        <li><a href="experiments/small-llm/evidence/after.json">Recorded result</a></li>
+      </ul>
+      <a class="button" href="./">Read the JEV post</a>
+    </aside>
+  </main>
+  <footer><div class="wrap">The original small-LLM experiment, preserved alongside the JEV follow-up.</div></footer>
+</body>
+</html>
+

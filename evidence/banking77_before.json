@@ -1,0 +1,45 @@
+{
+  "model_state": "pre_training_random_head",
+  "test_examples": 3080,
+  "accuracy": 0.016233766233766232,
+  "mean_confidence": 0.29014391419175384,
+  "calibration_error_10_bin": 0.2739101496367873,
+  "decision_accuracy": 0.4798701298701299,
+  "threshold": 0.7,
+  "automation_coverage": 0.0006493506493506494,
+  "accepted_accuracy": 0.0,
+  "accepted_decision_accuracy": 0.5,
+  "review_rate": 0.9993506493506493,
+  "selective_curve": [
+    {
+      "threshold": 0.5,
+      "coverage": 0.05097402597402598,
+      "intent_accuracy": 0.0,
+      "decision_accuracy": 0.29936305732484075
+    },
+    {
+      "threshold": 0.6,
+      "coverage": 0.01103896103896104,
+      "intent_accuracy": 0.0,
+      "decision_accuracy": 0.23529411764705882
+    },
+    {
+      "threshold": 0.7,
+      "coverage": 0.0006493506493506494,
+      "intent_accuracy": 0.0,
+      "decision_accuracy": 0.5
+    },
+    {
+      "threshold": 0.8,
+      "coverage": 0.0003246753246753247,
+      "intent_accuracy": 0.0,
+      "decision_accuracy": 1.0
+    },
+    {
+      "threshold": 0.9,
+      "coverage": 0.0,
+      "intent_accuracy": null,
+      "decision_accuracy": null
+    }
+  ]
+}

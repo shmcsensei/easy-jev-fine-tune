@@ -1,0 +1,45 @@
+{
+  "model_state": "post_training_adapter",
+  "test_examples": 3080,
+  "accuracy": 0.8324675324675325,
+  "mean_confidence": 0.7646471517426627,
+  "calibration_error_10_bin": 0.06782038457111106,
+  "decision_accuracy": 0.9201298701298701,
+  "threshold": 0.7,
+  "automation_coverage": 0.6704545454545454,
+  "accepted_accuracy": 0.9588377723970944,
+  "accepted_decision_accuracy": 0.9845036319612591,
+  "review_rate": 0.3295454545454546,
+  "selective_curve": [
+    {
+      "threshold": 0.5,
+      "coverage": 0.8337662337662337,
+      "intent_accuracy": 0.9170560747663551,
+      "decision_accuracy": 0.9676791277258567
+    },
+    {
+      "threshold": 0.6,
+      "coverage": 0.7542207792207792,
+      "intent_accuracy": 0.9354283254412398,
+      "decision_accuracy": 0.9750322858372794
+    },
+    {
+      "threshold": 0.7,
+      "coverage": 0.6704545454545454,
+      "intent_accuracy": 0.9588377723970944,
+      "decision_accuracy": 0.9845036319612591
+    },
+    {
+      "threshold": 0.8,
+      "coverage": 0.5574675324675324,
+      "intent_accuracy": 0.9737914967967385,
+      "decision_accuracy": 0.9918462434478742
+    },
+    {
+      "threshold": 0.9,
+      "coverage": 0.4155844155844156,
+      "intent_accuracy": 0.98828125,
+      "decision_accuracy": 0.996875
+    }
+  ]
+}

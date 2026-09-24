@@ -1,0 +1,14 @@
+{
+  "device": "mps",
+  "samples": 1000,
+  "warmup_requests": 30,
+  "measurement": "single-request end-to-end warm latency",
+  "model_load_ms": 1731.1352080432698,
+  "mean_ms": 37.98111900954973,
+  "p50_ms": 35.16247950028628,
+  "p95_ms": 47.42632294655777,
+  "p99_ms": 57.88418077107053,
+  "min_ms": 30.539416999090463,
+  "max_ms": 668.6244999873452,
+  "requests_per_second": 26.259882759612776
+}

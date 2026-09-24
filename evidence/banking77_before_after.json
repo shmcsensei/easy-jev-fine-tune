@@ -1,0 +1,21 @@
+{
+  "test_examples": 3080,
+  "pre_training": {
+    "intent_accuracy": 0.016233766233766232,
+    "decision_accuracy": 0.4798701298701299,
+    "mean_confidence": 0.29014391419175384,
+    "calibration_error_10_bin": 0.2739101496367873,
+    "automation_coverage_at_0.7": 0.0006493506493506494,
+    "review_rate_at_0.7": 0.9993506493506493
+  },
+  "post_training": {
+    "intent_accuracy": 0.8324675324675325,
+    "decision_accuracy": 0.9201298701298701,
+    "mean_confidence": 0.7646471517426627,
+    "calibration_error_10_bin": 0.06782038457111106,
+    "automation_coverage_at_0.7": 0.6704545454545454,
+    "review_rate_at_0.7": 0.3295454545454546,
+    "accepted_intent_accuracy_at_0.7": 0.9588377723970944,
+    "accepted_decision_accuracy_at_0.7": 0.9845036319612591
+  }
+}
