@@ -1,5 +1,7 @@
 # I Built My Own “Jev” and Fine-Tuned It on Banking Data
 
+*By Simon Chong · September 23, 2026*
+
 It returns a decision in roughly 35 milliseconds. I trained it on 10,003
 banking messages in under 30 minutes—on an Apple MacBook Air with 16 GB of RAM.
 
