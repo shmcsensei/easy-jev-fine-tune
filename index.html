@@ -28,6 +28,7 @@
     <article>
       <h2 id="idea">Models that do not write. They decide.</h2>
       <p class="lead">Everyone is talking about models that take text in and return typed choices with probabilities. It sounds like a new category of AI. So I built one.</p>
+      <div class="note"><p><strong>Credit where it is due.</strong> This experiment was inspired by Diogo Almeida’s original TypeSafe AI article, <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">“Introducing System One Models &amp; Jev.”</a> Jev, the System One terminology, and the original product concept belong to TypeSafe AI. This is my independent, small-scale exploration using an open model and public banking data.</p></div>
       <p>To be precise, I built my own tiny, local, Jev-shaped decision model. It is not TypeSafe’s Jev and does not claim to reproduce its architecture. It takes the useful product idea seriously: stop asking a language model to compose an answer when the product needs a bounded decision.</p>
       <p>I fine-tuned a 135M-parameter model on <a href="https://github.com/PolyAI-LDN/task-specific-datasets/tree/master/banking_data">Banking77</a>: 10,003 customer-support messages spanning 77 intents. The model sees a message such as:</p>
       <blockquote><p>Why was my card payment declined?</p></blockquote>

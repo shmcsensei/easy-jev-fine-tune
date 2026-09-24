@@ -2,6 +2,13 @@
 
 Everyone is talking about models that do not write. They decide.
 
+This experiment was inspired by Diogo Almeida's original TypeSafe AI article,
+[“Introducing System One Models & Jev”](https://typesafe.ai/blog/introducing-system-one-models-and-jev),
+which introduced Jev and the idea of fast, typed probabilistic decisions for
+software. The model, terminology, and original product concept belong to
+TypeSafe AI; what follows is my independent, small-scale attempt to explore that
+idea with an open model and public banking data.
+
 Text goes in. Typed choices and probabilities come out. It sounds like a new
 category of AI.
 
